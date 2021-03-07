@@ -4,7 +4,37 @@ pipeline{
         stage('SCM'){
             steps{
                 //git clone/pull
-                    git credentialsId: 'github', url: 'https://github.com/sreelekha2019/my-app.git', branch: 'dev'
+                    git credentialsId: 'github', url: 'pipeline{
+    agent any
+    stages{
+        stage('SCM'){
+            steps{
+                //git clone/pull
+                    git credentialsId: 'github', url: 'https://github.com/sreelekha2019/devops-projects', branch: 'main'
+                 
+            }
+        }
+        stage('mvn Build'){
+            steps{
+                sh 'mvn clean package'
+            }
+        }
+        stage('Tomcat Deploy'){
+            steps{
+                 sh "mv target/myweb*.war target/myweb.war"   
+                 sshagent(['slave-one']) {
+                    sh "scp -o StrictHostKeyChecking=no target/myweb.war ec2-user@172.31.43.126:/opt/tomcat8/webapps/"
+                    sh """
+                        ssh ec2-user@172.31.43.126 /opt/tomcat8/bin/shutdown.sh
+                        ssh ec2-user@172.31.43.126 /opt/tomcat8/bin/startup.sh
+                    """
+                      
+                }
+            }
+        }
+        
+    }
+}', branch: 'dev'
                  
             }
         }
