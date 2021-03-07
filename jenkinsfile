@@ -4,7 +4,7 @@ pipeline{
         stage('SCM'){
             steps{
                 //git clone/pull
-                    git credentialsId: 'github', url: 'https://github.com/sreelekha2019/devops-projects.git', branch: 'main'
+                    git credentialsId: 'github', url: 'https://github.com/sreelekha2019/devops-projects.git', branch: 'master'
 
             }
         }
