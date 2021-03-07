@@ -4,14 +4,8 @@ pipeline{
         stage('SCM'){
             steps{
                 //git clone/pull
-                    git credentialsId: 'github', url: 'pipeline{
-    agent any
-    stages{
-        stage('SCM'){
-            steps{
-                //git clone/pull
                     git credentialsId: 'github', url: 'main'https://github.com/sreelekha2019/devops-projects.git', branch: 'main'
-                 
+
             }
         }
         stage('mvn Build'){
@@ -21,41 +15,17 @@ pipeline{
         }
         stage('Tomcat Deploy'){
             steps{
-                 sh "mv target/myweb*.war target/myweb.war"   
+                 sh "mv target/myweb*.war target/myweb.war"
                  sshagent(['slave-one']) {
                     sh "scp -o StrictHostKeyChecking=no target/myweb.war ec2-user@172.31.43.126:/opt/tomcat8/webapps/"
-                    sh """
+                     sh """
                         ssh ec2-user@172.31.43.126 /opt/tomcat8/bin/shutdown.sh
                         ssh ec2-user@172.31.43.126 /opt/tomcat8/bin/startup.sh
                     """
-                      
+
                 }
             }
         }
-        
-    }
-}', branch: 'dev'
-                 
-            }
-        }
-        stage('mvn Build'){
-            steps{
-                sh 'mvn clean package'
-            }
-        }
-        stage('Tomcat Deploy'){
-            steps{
-                 sh "mv target/myweb*.war target/myweb.war"   
-                 sshagent(['slave-one']){
-                    sh "scp -o StrictHostKeyChecking=no target/myweb.war ec2-user@172.31.43.126:/opt/tomcat8/webapps/"
-                    sh """
-                        ssh ec2-user@172.31.43.126 /opt/tomcat8/bin/shutdown.sh
-                        ssh ec2-user@172.31.43.126 /opt/tomcat8/bin/startup.sh
-                    """
-                      
-                }
-            }
-        }
-        
+
     }
 }
